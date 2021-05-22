@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/iank/workspace_clion/cache/Cache.hpp
+memory
+-
+vector
+-
+string
+-
+unordered_map
+-
+iostream
+-
+
+/home/iank/workspace_clion/cache/main.cpp
+Cache.hpp
+/home/iank/workspace_clion/cache/Cache.hpp
+string
+-
+iostream
+-
+
