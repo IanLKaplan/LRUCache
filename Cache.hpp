@@ -79,12 +79,29 @@ private:
 
     class DoubleList {
     public:
+        DoubleList() = default;
+
+        ~DoubleList() {
+            // delete the doubly linked list
+            while (tail != nullptr) {
+                ListElem *prev = tail->prev;
+                delete tail;
+                tail = prev;
+            }
+        }
+
         void unlinkElem(ListElem *elem) {
             ListElem *prev = elem->prev;
             ListElem *next = elem->next;
             prev->next = next;
             if (next != nullptr) {
                 next->prev = prev;
+            }
+            if (tail == elem) {
+                tail = prev;
+            }
+            if (head == elem) {
+                head = next;
             }
         }
 
@@ -104,15 +121,13 @@ private:
             tail = tail->prev;
             tail->next = nullptr;
             lastElem->next = nullptr;
-            lastElem -> prev = nullptr;
+            lastElem->prev = nullptr;
             auto key = lastElem->key;
             delete lastElem;
             return key;
         }
 
         ListElem *getHead() { return head; }
-
-        ~DoubleList() = default;
 
     private:
         ListElem *head = nullptr;
