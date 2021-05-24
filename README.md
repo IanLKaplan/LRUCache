@@ -12,7 +12,7 @@ something to refresh my C++ knowledge. To help in this endeavor, I bought a copy
 of Bjarne Stroustrup's book "A Tour of C++". This book was the perfect reference
 for brushing up on my C++.
 
-After reading through Stroustrup's book, I needed something to write some code.
+After reading through Stroustrup's book, I needed to write some code.
 I decided to implement a generic version of an LRU cache as a C++ template.
 
 LRU caches have a number of applications. They can serve as a front end for a
