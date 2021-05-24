@@ -7,19 +7,36 @@
 
 #include <memory>
 #include <vector>
-#include <string>
 #include <unordered_map>
 #include <iostream>
+#include <tuple>
 
 using namespace std;
 
+/**
+ *
+ * @tparam K The type of the key for the LRU cache. This type must support a hash function for the unordered
+ * cache that the keys and element pointers are stored in.
+ * @tparam V The type of the LRU cache value associated with the key (e.g., a pair {K, V}).
+ */
 template<typename K, typename V>
 class Cache {
 public:
-    explicit Cache(int cacheSize) { maxElements = cacheSize; }
+    /**
+     * The Cache constructor
+     * @param cacheSize the maximum number of elements to store in the cache.
+     */
+    explicit Cache(int cacheSize) : maxElements(cacheSize) {}
     ~Cache() = default;
 
-    void put(K &key, V &value) {
+    /**
+     * Add an element to the LRU cache. If the cache size has been reached, the least recently
+     * used element will be removed from the cache when this element is added.
+     *
+     * @param key the lookup key for the element stored in the cache.
+     * @param value the value associated with the key.
+     */
+    void put(K key, V &value) {
         auto search = hashMap.find(key);
         if (search == hashMap.end()) { // the key was not found in the map, so add it
             if (hashMap.size() == maxSize()) {
@@ -41,15 +58,24 @@ public:
         }
     }
 
-    V &get(K &key) {
+    /**
+     *
+     * @param key the key for the cache value
+     * @return a pointer to the value stored in the cache, or nullptr if the {key, value} pair don't exist.
+     */
+    V* get(K key) {
+        V* rsltPtr = nullptr;
         auto search = hashMap.find(key);
-        if (search != hashMap.end) {
-            return search->first->value;
-        } else {
-            return nullptr;
+        if (search != hashMap.end()) {
+            rsltPtr = &(search->second->value);
         }
+        return rsltPtr;
     }
 
+    /**
+     * @return a vector of {key, value} pairs from the map. The vector is returned as
+     * a unique_ptr() "smart pointer" reference.
+     */
     unique_ptr<vector<pair<K,V>>> mapVector() {
         auto* mapValsPtr = new vector<pair<K,V>>();
         unique_ptr<vector<pair<K,V>>> mapVals(mapValsPtr );
@@ -62,7 +88,15 @@ public:
         return mapVals;
     }
 
+    /**
+     *
+     * @return the maximum number of items that can be stored in the cache.
+     */
     int maxSize() { return maxElements; }
+    /**
+     *
+     * @return the number of elements currently stored in the cache
+     */
     int size() { return hashMap.size(); }
 
 private:
@@ -90,6 +124,10 @@ private:
             }
         }
 
+        /**
+         * Remove a ListElem from the doubly linked list.
+         * @param elem a pointer to the element to be removed.
+         */
         void unlinkElem(ListElem *elem) {
             ListElem *prev = elem->prev;
             ListElem *next = elem->next;
@@ -105,6 +143,11 @@ private:
             }
         }
 
+        /**
+         * Add a list element to the front of the list. This is the most recently element in the list.
+         *
+         * @param the list element to be added to the front of the list.
+         */
         void addToFront(ListElem *elem) {
             if (head == nullptr) {
                 tail = elem;
@@ -116,6 +159,10 @@ private:
             head = elem;
         }
 
+        /**
+         * Remove an element from the end of the list.
+         * @return the key value for the last element in the list.
+         */
         K deleteLastElem() {
             ListElem *lastElem = tail;
             tail = tail->prev;
@@ -134,7 +181,7 @@ private:
         ListElem *tail = nullptr;
     };
 
-    int maxElements;
+    const int maxElements;
     unordered_map<K, ListElem *> hashMap;
     DoubleList doubleList;
 };
