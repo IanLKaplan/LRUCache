@@ -185,8 +185,6 @@ private:
             return key;
         }
 
-        ListElem *getHead() { return head; }
-
     private:
         ListElem *head = nullptr;
         ListElem *tail = nullptr;
