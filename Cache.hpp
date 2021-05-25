@@ -45,20 +45,22 @@ public:
                 // remove from the hash map.
                 hashMap.erase(lastKey);
             }
-            auto *newElem = new ListElem(key, value);
-            doubleList.addToFront(newElem);
-            hashMap.insert({key, newElem});
         } else { // The key was found
-            // if element is not at the start of the list, move it to the start
-            if (doubleList.getHead()->key != key) {
-                ListElem *foundElemPtr = search->second;
-                doubleList.unlinkElem(foundElemPtr);
-                doubleList.addToFront(foundElemPtr);
-            }
+            // Update the value.  We don't want to require that the value object implements the == operator, so
+            // the value is always updated.
+            ListElem* currentElem = search->second;
+            // remove the element from the LRU list
+            doubleList.unlinkElem( currentElem );
+            delete currentElem;
         }
+        auto *newElem = new ListElem(key, value);
+        doubleList.addToFront( newElem );
+        hashMap[ key ] = newElem;
     }
 
     /**
+     * If the key exists in the cache, return the key. The element has been referenced, so move to the
+     * start of the LRU list (the start of the list being the most recently referenced item).
      *
      * @param key the key for the cache value
      * @return a pointer to the value stored in the cache, or nullptr if the {key, value} pair don't exist.
@@ -68,6 +70,8 @@ public:
         auto search = hashMap.find(key);
         if (search != hashMap.end()) {
             rsltPtr = &(search->second->value);
+            ListElem* elemPtr = search->second;
+            doubleList.moveToFront( elemPtr );
         }
         return rsltPtr;
     }
@@ -157,6 +161,13 @@ private:
             elem->next = head;
             elem->prev = nullptr;
             head = elem;
+        }
+
+        void moveToFront(ListElem *elem) {
+            if (head != elem) {
+                unlinkElem( elem );
+                addToFront( elem );
+            }
         }
 
         /**

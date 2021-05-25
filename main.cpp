@@ -12,7 +12,7 @@ struct Element {
     Element(string strval, int v) : s(std::move(strval)), val(v) {}
     ~Element() = default;
     const string s;
-    const int val;
+    int val;
 };
 
 int main() {
@@ -34,9 +34,11 @@ int main() {
     Element elemFive( str, 5);
     cache.put(str, elemFive);
     str = "two";
+    elemTwo.val = 42;
     cache.put(str, elemTwo);
-    Element* elemPtr = cache.get( "three" );
-    cout << "elemPtr->s = " << elemPtr->s << ", elemPtr->val = " << elemPtr->val << endl;
+
+    Element* elemPtr = cache.get( "two" );
+    assert( elemPtr-> val == 42);
 
     elemPtr = cache.get("bogosity");
     assert(elemPtr == nullptr);
