@@ -1,5 +1,5 @@
 //
-// Created by iank on 5/20/21.
+// Created by Ian L Kaplan, iank@bearcave.com, www.topstonesoftware.com, on 5/20/21.
 //
 
 #ifndef CACHE_CACHE_HPP
@@ -8,7 +8,6 @@
 #include <memory>
 #include <vector>
 #include <unordered_map>
-#include <iostream>
 #include <tuple>
 
 using namespace std;
